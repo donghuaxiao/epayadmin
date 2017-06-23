@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}<title>Order List</title>{% endblock %}
+
+{% block content %}
+    <h1 class="page-header">{{ nav }}</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>paymentOrderID</th>
+                <th>orderID</th>
+                <th>orderTime</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.paymentorderid }}</td>
+                <td>{{ order.orderid }}</td>
+                <td>{{ order.ordertime }}</td>
+                <td>{{ order.amount }}</td>
+                <td>{{ order.status }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
