@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content%}
+ <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>支付方式</th>
+            <th>支付方式名称</th>
+            <th>机构ID</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>描述</th>
+            <th>营销描述</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for org in orgs.object_list %}
+        <tr>
+            <td>{{ org.orgId }}</td>
+            <td>{{ org.orgName }}</td>
+            <td>{{ org.companyCode }}</td>
+            <td>{{ org.status }}</td>
+            <td>{{ org.createTime }}</td>
+            <td>{{ org.description }}</td>
+            <td>{{ org.marketInfo }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="row">
+            <div class="col-md-4">
+                <span>第{{orgs.number}}页, 总共 {{ orgs.paginator.num_pages}}页</span>
+            </div>
+            <div class="col-md-4 col-offset-4">
+                <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if orgs.has_previous %}
+                <li>
+                    <a href="?page={{orgs.previous_page_number}}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <li><a href="#">{{orgs.number}}</a></li>
+
+                {% if orgs.has_next %}
+                <li>
+                    <a href="?page={{orgs.next_page_number}}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+            </div>
+        </div>
+{% endblock %}
+{% block javascript%}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(function() {
+        $('ul.nav-sidebar li').removeClass('active');
+        $('#org_menu').addClass('active');
+    });
+    </script>
+{% endblock%}

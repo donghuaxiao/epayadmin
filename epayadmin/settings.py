@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'epay'
+    'epay',
+    'epay.templatetags'
 ]
 
 MIDDLEWARE = [
@@ -82,7 +83,7 @@ DATABASES = {
         'PASSWORD': 'Epaydev456',
         'PORT': '15211',
         'HOST': 'localhost'
-    }
+    },
 }
 
 
@@ -123,4 +124,34 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT= os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+      'verbose': {
+          'format': '%(levelname)s %(asctime)s %(module)s:%(lineno)d %(message)s'
+      }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG'
+        }
+    },
+
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'propagate': True,
+            'handlers': ['console']
+
+        },
+        'epay.paginator': {
+            'level': 'DEBUG',
+            'propagate': True,
+            'handlers': ['console']
+        }
+    },
+}

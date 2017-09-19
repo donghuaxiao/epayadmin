@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tag %}
+{% block title %}
+    <title>Channel List</title>
+    <style>
+        .search {
+            padding: 10px;
+            margin: 10px;
+        }
+        li {
+            list-style-type:none;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="search">
+        <form class="form-inline" id="search" action="{% url 'list_merchant_channel_service' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="page" />
+            <ul>
+                <li>
+                    <div class="form-group">
+                        <label class="control-label">渠道</label>
+                        <select id="channel" name="channel_id">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">服务</label>
+                        <select id="service" name="service_id">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">商户</label>
+                        <select id="merchant" name="merchant_id">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button id="submit" class="btn btn-primary">查询</button>
+                    </div>
+                </li>
+            </ul>
+        </form>
+    </div>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>商户ID</th>
+            <th>商户名称</th>
+            <th>渠道ID</th>
+            <th>渠道名称</th>
+            <th>业务ID</th>
+            <th>业务名称</th>
+            <th>账号</th>
+            <th>支付方式</th>
+            <th>支付机构</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for result in results.object_list %}
+        <tr>
+            <td>{{ result.merchant_id }}</td>
+            <td>{{ result.merchant_name }}</td>
+            <td>{{ result.channel_id }}</td>
+            <td>{{ result.channel_name }}</td>
+            <td>{{ result.service_id}}</td>
+            <td>{{ result.service_name }}</td>
+            <td>{{ result.account_id }}</td>
+            <td>{{ result.org_id }}</td>
+            <td>{{ result.org_name }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="row">
+            <div class="col-md-4">
+                <span>第{{results.number}}页, 总共 {{ results.paginator.num_pages}}页</span>
+            </div>
+            <div class="col-md-4 col-offset-4">
+                <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if results.has_previous %}
+                <li>
+                    <a href="#" id="previous" aria-label="Previous" page="{{results.previous_page_number}}">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <li><a href="#">{{results.number}}</a></li>
+
+                {% if results.has_next %}
+                <li>
+                    <a href="#" id="next" aria-label="Next" page="{{results.next_page_number}}">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+            </div>
+        </div>
+{% endblock %}
+{% block javascript %}
+    {{ block.super }}
+ <script type="text/javascript">
+        $(function(){
+            $('ul.nav-sidebar li').removeClass('active');
+            $('#cmsp_menu').addClass('active');
+            $.ajax({
+                url : "{% url 'channels' %}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(json) {
+                    json = JSON.parse(json);
+                    var $channel = $('#channel');
+                    $.each(json, function(idx, item){
+                        $('<option>').val(item['id']).text(item['name']).appendTo($channel);
+                    });
+                }
+            });
+
+            $.ajax({
+                url : "{% url 'services' %}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(json) {
+                    json= JSON.parse(json);
+                    var $service = $('#service');
+                    $.each(json, function(idx, item) {
+                        $('<option>').val(item['id']).text(item['name']).appendTo($service);
+                    });
+                }
+            });
+
+            $.ajax({
+                url : "{% url 'merchants' %}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(json) {
+                    json= JSON.parse(json);
+                    var $merchant = $('#merchant');
+                    $.each(json, function(idx, item) {
+                        $('<option>').val(item['id']).text(item['name']).appendTo($merchant);
+                    });
+                }
+            });
+
+            $('#next').on('click', function(event){
+                alert("click");
+                var $target = $(event.target).closest('#next');
+                var page = $target.attr('page');
+                $("input[name='page']").val(page);
+                $('#search').submit();
+            });
+            $('#previous').on('click', function(event){
+                alert("click");
+                var $target = $(event.target).closest('#previous');
+                var page = $target.attr('page');
+                $("input[name='page']").val(page);
+                $('#search').submit();
+            });
+        });
+    </script>
+{% endblock %}
